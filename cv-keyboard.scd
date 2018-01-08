@@ -9,19 +9,7 @@
 ~arcSelectionRight = [0, 1];
 ~arcLedsSaved = [[12, 0], [15, 0]]; //this is misleading because it's grid leds not arc leds
 ~scale = [
-	1.00000,
-	1.05946,
-	1.12246,
-	1.18921,
-	1.25992,
-	1.33483,
-	1.41421,
-	1.49831,
-	1.58740,
-	1.68179,
-	1.78180,
-	1.88775,
-	//2.00000,
+	0, 1, 2.15, 3, 3.9, 5, 6, 7.1, 8, 9.3, 10, 11.4
 ];
 ~updateGridLeds = {
 	var x, y, tempGridLedsLeft, tempGridLedsRight, gridWidth;
@@ -73,7 +61,7 @@ OSCFunc.newMatching( //grid
 		(0.1 / 12) * 4, (0.1 / 12) * 5, (0.1 / 12) * 6, (0.1 / 12) * 7,
 		(0.1 / 12) * 8, (0.1 / 12) * 9, (0.1 / 12) * 10, (0.1 / 12) * 11];*/
 		var semi = {arg degree;
-			(~scale[degree] * 0.1) - 0.1;
+			(0.1 / 12) * ~scale[degree];
 		};
 		var naturals = {arg messageOne, messageTwo, messageThree, octnum;
 			var curnote = {
@@ -104,8 +92,8 @@ OSCFunc.newMatching( //grid
 			};
 			var gridKey = {arg input;
 				curnote.value;
-				~synth.set(\add, octave[octnum] + semi.value(input));
-				postln(octave[octnum] + semi.value(input));
+				~synth.set(\add, semi.value(input) + octave[octnum]);
+				postln(semi.value(input) + octave[octnum]);
 				gateOn.value;
 				playLed.value;
 			};
@@ -172,8 +160,8 @@ OSCFunc.newMatching( //grid
 			};
 			var gridKey = {arg input;
 				curnote.value;
-				~synth.set(\add, octave[octnum] + semi.value(input));
-				postln(octave[octnum] + semi.value(input));
+				~synth.set(\add, semi.value(input) + octave[octnum]);
+				postln(semi.value(input) + octave[octnum]);
 				gateOn.value;
 				playLed.value;
 			};
@@ -358,7 +346,7 @@ s.waitForBoot({
 		s.sync;
 		SynthDef("Delay/Reverb", {arg in, out, delayTime = 1, decayTime = 1, delayLevel = 1;
 			var input = SoundIn.ar(in, 1);
-			var delay = CombC.ar(input, 4, Lag.kr(delayTime, 0.1), decayTime, delayLevel);
+			var delay = CombC.ar(input, 4, Lag.kr(delayTime, 0.2), decayTime, delayLevel);
 			Out.ar(out, input + delay);
 		}).add;
 		s.sync;
